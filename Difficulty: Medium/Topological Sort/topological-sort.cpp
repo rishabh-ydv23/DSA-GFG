@@ -1,42 +1,41 @@
 class Solution {
   public:
   
-    void dfs(vector<int>adj[],stack<int>&st,vector<bool>&visited,int u){
-        visited[u]=true;
-        //first u ke nodes ko daalenge 
-        for(int &v:adj[u]){
-            if(!visited[v]){
-                dfs(adj,st,visited,v);
+    void dfs(int node, vector<int>&visited, vector<vector<int>>&adj, stack<int>&st){
+        visited[node]=1;
+        
+        for(int neighbour:adj[node]){
+            if(!visited[neighbour]){
+                dfs(neighbour,visited,adj,st);
             }
         }
-        
-        st.push(u);
+        st.push(node);
     }
   
     vector<int> topoSort(int V, vector<vector<int>>& edges) {
-        vector<int>adj[V];
-        for(auto edge:edges){
+        // code here
+        vector<vector<int>>adj(V);
+        vector<int>ans;
+        
+        for(auto &edge:edges){
             int u=edge[0];
             int v=edge[1];
-            
             adj[u].push_back(v);
         }
         
-        vector<bool>visited(V,false);
+        vector<int>visited(V,0);
         stack<int>st;
         
         for(int i=0;i<V;i++){
             if(!visited[i]){
-                dfs(adj,st,visited,i);
+                dfs(i,visited,adj,st);
             }
         }
         
-        vector<int>ans;
         while(!st.empty()){
             ans.push_back(st.top());
             st.pop();
         }
-        
         return ans;
     }
 };
