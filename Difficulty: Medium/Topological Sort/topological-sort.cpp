@@ -1,41 +1,46 @@
 class Solution {
   public:
-  
-    void dfs(int node, vector<int>&visited, vector<vector<int>>&adj, stack<int>&st){
-        visited[node]=1;
-        
-        for(int neighbour:adj[node]){
-            if(!visited[neighbour]){
-                dfs(neighbour,visited,adj,st);
-            }
-        }
-        st.push(node);
-    }
-  
     vector<int> topoSort(int V, vector<vector<int>>& edges) {
         // code here
         vector<vector<int>>adj(V);
-        vector<int>ans;
         
         for(auto &edge:edges){
             int u=edge[0];
             int v=edge[1];
+            
             adj[u].push_back(v);
         }
         
-        vector<int>visited(V,0);
-        stack<int>st;
+        vector<int>indegree(V,0);
         
         for(int i=0;i<V;i++){
-            if(!visited[i]){
-                dfs(i,visited,adj,st);
+            for(int neighbour:adj[i]){
+                indegree[neighbour]++;
             }
         }
         
-        while(!st.empty()){
-            ans.push_back(st.top());
-            st.pop();
+        queue<int>q;
+        
+        for(int i=0;i<V;i++){
+            if(indegree[i]==0){
+                q.push(i);
+            }
         }
-        return ans;
+        
+        vector<int>topo;
+        
+        while(!q.empty()){
+            int node=q.front();
+            q.pop();
+            topo.push_back(node);
+            
+            for(int neighbour:adj[node]){
+                indegree[neighbour]--;
+                if(indegree[neighbour]==0){
+                    q.push(neighbour);
+                }
+            }
+        }
+        return topo;
     }
 };
